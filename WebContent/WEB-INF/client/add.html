@@ -13,19 +13,52 @@
 	$(function() {
 		$("#includedContent").load("../header.html");
 		$("#accordion").accordion();
+		$("#nivscoAccomp").buttonset();
+		$("#etatradioAccomp").buttonset();
+		$("#lienParente").buttonset();
+		$("#civilite").buttonset();
+		$("#civiliteUtilisateur").buttonset();
 		$("#etatradio").buttonset();
-		$("#choixOpRadio").buttonset();
+		$("#raisonChoix").buttonset();
 		$("#operateurRadio").buttonset();
 		$("#nivsco").buttonset();
-		
-		
-		$("#datepicker").datepicker();
+		$("#dateNaissance").datepicker();
+		$("#dateNaissanceUtilisateur").datepicker();
+
 	});
-	$("#nivscoAccomp").buttonset();
-	$("#etatradioAccomp").buttonset();
-	$("#lienRadio").buttonset();
-	$("#sexeradio").buttonset();
-	$("#sexeradioAccomp").buttonset();
+
+	$(document).ready(function() {
+		// lorsque je soumets le formulaire
+		$('#cutomerForm').on('submit', function() {
+
+			// je récupère les valeurs
+			var customer = new Object();
+			 customer.dateNaissance = $('#dateNaissance').val();
+			 customer.name = $('#name').val(); 
+			 customer.age = 30;
+			 var cutomerJson = JSON.stringify(customer);
+			// je vérifie une première fois pour ne pas lancer la requête HTTP
+			// si je sais que mon PHP renverra une erreur
+				// appel Ajax
+				alert(cutomerJson);
+				 $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: cutomerJson,
+                dataType: "json",  
+                contentType: "json",  
+                
+                success: function(){              
+                    alert("success :-)");  
+                  },  
+                  error: function(){  
+                    alert("fail :-(");  
+                  }  
+            });
+			
+			return false; // j'empêche le navigateur de soumettre lui-même le formulaire
+		});
+	});
 </script>
 <style type="text/css">
 .demoHeaders {
@@ -65,8 +98,8 @@
 	margin: 0 4px;
 }
 
-.acctab{
-height: 300px;
+.acctab {
+	height: 300px;
 }
 </style>
 </head>
@@ -74,328 +107,313 @@ height: 300px;
 	<div id="includedContent"></div>
 	<div id="content" class="content">
 		<h2 class="demoHeaders">Formulaire d'informations Client</h2>
-		<div id="accordion">
-			<h3>Informations Générales</h3>
-			<div style="height: 300px;">
-				<table>
-					<tr>
-						<td><label>Nom</label></td>
-						<td><input id="name"></td>
-					</tr>
-					<tr>
-						<td><label>Prénom</label></td>
-						<td><input id="lastname"></td>
-					</tr>
-					<tr>
-						<td><label>Date de naissance</label></td>
-						<td><input type="text" id="datepicker"></td>
-					</tr>
-					<tr>
-						<td><label for="nationalite">Natinalité</label></td>
-						<td><select id="nationalite" name="nationalite">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-					</tr>
-					<tr>
-						<td><label>Séxe</label></td>
-						<td>
+		<form id="cutomerForm" action="http://localhost:8080/server-1.0-SNAPSHOT/offer/getAll" method="post">
+			<div id="accordion">
+				<h3>Informations Générales</h3>
+				<div style="height: 300px;">
+					<table>
+						<tr>
+							<td><label>Nom</label></td>
+							<td><input id="name"></td>
+						</tr>
+						<tr>
+							<td><label>Prénom</label></td>
+							<td><input id="lastname"></td>
+						</tr>
+						<tr>
+							<td><label>Date de naissance</label></td>
+							<td><input type="text" id="dateNaissance"></td>
+						</tr>
+						<tr>
+							<td><label for="nationalite">Nationalité</label></td>
+							<td><select id="country" name="nationalite">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td><label>Séxe</label></td>
+							<td>
 
-							<div id="sexeradio">
-								<input type="radio" id="homme" name="radio"><label
-									for="homme">homme</label> <input type="radio" id="femme"
-									name="radio" checked="checked"><label for="femme">Femme</label>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td><label>Téléphone Fixe</label></td>
-						<td><input id="tel"></td>
-					</tr>
-					<tr>
-						<td><label>Adresse éléctronique</label></td>
-						<td><input id="email"></td>
-					</tr>
-					<tr>
-						<td><label>Pièce d'identité</label></td>
-						<td><select id="idcard" name="">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-						<td><label>Numéro</label></td>
-						<td><input id="idnumber"></td>
-					</tr>
-					<tr>
+								<div id="civilite">
+									<input type="radio" id="homme" name="sexeradio"><label
+										for="homme">homme</label> <input type="radio" id="femme"
+										name="sexeradio" checked="checked"><label for="femme">Femme</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td><label>Téléphone Fixe</label></td>
+							<td><input id="phone"></td>
+						</tr>
+						<tr>
+							<td><label>Adresse éléctronique</label></td>
+							<td><input id="email"></td>
+						</tr>
+						<tr>
+							<td><label>Pièce d'identité</label></td>
+							<td><select id="idType" name="">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+							<td><label>Numéro</label></td>
+							<td><input id="idNumber"></td>
+						</tr>
+						<tr>
 
-					</tr>
-					<tr>
-						<td><label>Adresse</label></td>
-					</tr>
-					<tr>
-						<td><label>Ville</label></td>
-						<td><input id="ville"></td>
-						<td><label>Code Postal</label></td>
-						<td><input id="postcode"></td>
-						<td><label>Gouvernorat</label></td>
-						<td><select id="gouv" name="gouv">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-						<td></td>
-					</tr>
-				</table>
+						</tr>
+						<tr>
+							<td><label>Adresse</label></td>
+						</tr>
+						<tr>
+							<td><label>Ville</label></td>
+							<td><input id="villeUtilisateur"></td>
+							<td><label>Code Postal</label></td>
+							<td><input id="codePostal"></td>
+							<td><label>Gouvernorat</label></td>
+							<td><select id="gouvernorat" name="gouv">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+							<td></td>
+						</tr>
+					</table>
+
+				</div>
+				<h3>Informations Complèmentaires</h3>
+				<div>
+					<table>
+
+						<tr>
+							<td><label>Niveau scolaire</label></td>
+							<td><div id="nivsco">
+									<input type="radio" id="primaire" name="nivsco"><label
+										for="primaire">Primaire</label> <input type="radio"
+										id="secondaire" name="nivsco"><label for="secondaire">Secondaire</label>
+									<input type="radio" id="superieur" name="nivsco"><label
+										for="superieur">Superieur</label>
+
+								</div></td>
+						</tr>
+						<tr>
+							<td><label>Profession</label></td>
+							<td><select id="profession" name="profession">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+
+						</tr>
+						<tr>
+							<td><label>Etat civil</label></td>
+							<td>
+								<div id="etatradio">
+									<input type="radio" id="celib" name="etatradio"><label
+										for="celib">célibataire</label> <input type="radio" id="marie"
+										name="etatradio"><label for="marie">Marié(e)</label>
+									<input type="radio" id="divorce" name="etatradio"><label
+										for="divorce">Divorcé(e)</label> <input type="radio" id="veuf"
+										name="etatradio"><label for="veuf">Veuf(ve)</label>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td><label>Revenu</label></td>
+							<td><select id="revenu" name="revenu">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+
+						</tr>
+
+					</table>
+				</div>
+				<h3>Informations Achat</h3>
+				<div>
+					<table>
+						<tr>
+							<td><label>Situation d'achat</label></td>
+							<td><select id="raisonAchat" name="raisonAchat">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td><label>Si vous n'çetes pas l'utilisateur
+									veuillez remplir ces champs</label></td>
+						</tr>
+						<tr>
+							<td><label>Lien de parenté</label></td>
+						</tr>
+						<tr>
+							<td><label>Nom</label></td>
+							<td><input id="nomUtilisateur"></td>
+						</tr>
+						<tr>
+							<td><label>Prénom</label></td>
+							<td><input id="prenomUtilisateur"></td>
+						</tr>
+						<tr>
+							<td><label>Date de naissance</label></td>
+							<td><input type="text" id="dateNaissanceUtilisateur"></td>
+						</tr>
+						<tr>
+							<td><label for="countryUtilisateur">Natinalité</label></td>
+							<td><select id="countryUtilisateur" name="nationalite">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td><label>Séxe</label></td>
+							<td>
+
+								<div id="civiliteUtilisateur">
+									<input type="radio" id="hommeAccomp" name="sexeradioAccomp"><label
+										for="hommeAccomp">homme</label> <input type="radio"
+										id="femmeAccomp" name="sexeradioAccomp" checked="checked"><label
+										for="femmeAccomp">Femme</label>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td><label>Adresse</label></td>
+						</tr>
+						<tr>
+							<td><label>Ville</label></td>
+							<td><input id="villeUtilisateur"></td>
+							<td><label>Code Postal</label></td>
+							<td><input id="codePostalUtilisateur"></td>
+							<td><label>Gouvernorat</label></td>
+							<td><select id="gouvernoratUtilisateur" name="gouv">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><label>Niveau scolaire</label></td>
+							<td><div id="nivscoAccomp">
+									<input type="radio" id="primaireAccomp" name="nivscoAccomp"><label
+										for="primaireAccomp">Primaire</label> <input type="radio"
+										id="secondaireAccomp" name="nivscoAccomp"><label
+										for="secondaireAccomp">Secondaire</label> <input type="radio"
+										id="superieurAccomp" name="nivscoAccomp"><label
+										for="superieurAccomp">Superieur</label>
+
+								</div></td>
+						</tr>
+						<tr>
+							<td><label>Profession</label></td>
+							<td><select id="professionUtilisateur"
+								name="professionUtilisateur">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+
+						</tr>
+						<tr>
+							<td><label>Etat civil</label></td>
+							<td>
+								<div id="etatradioAccomp">
+									<input type="radio" id="celibAccomp" name="etatradioAccomp"><label
+										for="celibAccomp">célibataire</label> <input type="radio"
+										id="marieAccomp" name="etatradioAccomp"><label
+										for="marieAccomp">Marié(e)</label> <input type="radio"
+										id="divorceAccomp" name="etatradioAccomp"><label
+										for="divorceAccomp">Divorcé(e)</label> <input type="radio"
+										id="veufAccomp" name="etatradioAccomp"><label
+										for="veufAccomp">Veuf(ve)</label>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td><label>Revenu</label></td>
+							<td><select id="revenu" name="revenu">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+
+						</tr>
+						<tr>
+					</table>
+
+
+				</div>
+				<h3>Informations Accompagnant(Si achat accompagné)</h3>
+				<div>
+					<table>
+						<tr>
+							<td><label>Lien</label></td>
+							<td>
+								<div id="lienParente">
+									<input type="radio" id="ami" name="lienRadio"><label
+										for="ami">Ami</label> <input type="radio" id="parent"
+										name="lienRadio"><label for="parent">Parent</label> <input
+										type="radio" id="vendeur" name="lienRadio"><label
+										for="vendeur">Vendeur</label>
+
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td><label>Opérateur téléphonique</label></td>
+							<td>
+								<div id="operateurRadio">
+									<input type="radio" id="tun" name="operateurRadio"><label
+										for="tun">Tunisiana</label> <input type="radio" id="orange"
+										name="operateurRadio"><label for="orange">Orange</label>
+									<input type="radio" id="tt" name="operateurRadio"><label
+										for="tt">Tunisie Télécom</label> <input type="radio"
+										id="ellissa" name="operateurRadio"><label
+										for="ellissa">Ellissa</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td><label>Raison du choix de l'opérateur</label></td>
+							<td>
+								<div id="raisonChoix">
+									<input type="radio" id="img" name="choixOpRadio"><label
+										for="img">Image</label> <input type="radio" id="prix"
+										name="choixOpRadio"><label for="prix">Prix</label> <input
+										type="radio" id="qos" name="choixOpRadio"><label
+										for="qos">Qualité de service</label> <input type="radio"
+										id="offre" name="choixOpRadio"><label for="offre">Offre</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td><label>Dépenses</label></td>
+							<td><select id="gouv" name="gouv">
+									<option value="en-US">US $</option>
+									<option value="de-DE">EUR €</option>
+									<option value="ja-JP">YEN ¥</option>
+							</select></td>
+						</tr>
+					</table>
+
+				</div>
+
+
 
 			</div>
-			<h3>Informations Complèmentaires</h3>
-			<div>
-				<table>
-
-					<tr>
-						<td><label>Niveau scolaire</label></td>
-						<td><div id="nivsco">
-								<input type="radio" id="primaire" name="radio"><label
-									for="primaire">Primaire</label> <input type="radio"
-									id="secondaire" name="radio" ><label
-									for="secondaire">Secondaire</label> <input type="radio"
-									id="superieur" name="radio" ><label
-									for="superieur">Superieur</label>
-
-							</div></td>
-					</tr>
-					<tr>
-						<td><label>Profession</label></td>
-						<td><select id="gouv" name="gouv">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-
-					</tr>
-					<tr>
-						<td><label>Etat civil</label></td>
-						<td>
-							<div id="etatradio">
-								<input type="radio" id="celib" name="radio"><label
-									for="celib">célibataire</label> <input type="radio" id="marie"
-									name="radio" ><label for="marie">Marié(e)</label>
-								<input type="radio" id="divorce" name="radio" ><label
-									for="divorce">Divorcé(e)</label> <input type="radio" id="veuf"
-									name="radio" ><label for="veuf">Veuf(ve)</label>
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td><label>Revenu</label></td>
-						<td><select id="gouv" name="gouv">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-
-					</tr>
-
-				</table>
-			</div>
-			<h3>Informations Achat</h3>
-			<div>
-				<table>
-					<tr>
-						<td><label>Situation d'achat</label></td>
-						<td><select id="situation" name="situation">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-					</tr>
-					<tr>
-						<td><label>Si vous n'çetes pas l'utilisateur veuillez
-								remplir ces champs</label></td>
-					</tr>
-					<tr>
-						<td><label>Lien de parenté</label></td>
-					</tr>
-					<tr>
-						<td><label>Nom</label></td>
-						<td><input id="name"></td>
-					</tr>
-					<tr>
-						<td><label>Prénom</label></td>
-						<td><input id="lastname"></td>
-					</tr>
-					<tr>
-						<td><label>Date de naissance</label></td>
-						<td><input type="text" id="datepicker"></td>
-					</tr>
-					<tr>
-						<td><label for="nationalite">Natinalité</label></td>
-						<td><select id="nationalite" name="nationalite">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-					</tr>
-					<tr>
-						<td><label>Séxe</label></td>
-						<td>
-
-							<div id="sexeradioAccomp">
-								<input type="radio" id="hommeAccomp" name="radio"><label
-									for="hommeAccomp">homme</label> <input type="radio" id="femmeAccomp"
-									name="radio" checked="checked"><label for="femmeAccomp">Femme</label>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td><label>Téléphone Fixe</label></td>
-						<td><input id="tel"></td>
-					</tr>
-					<tr>
-						<td><label>Adresse éléctronique</label></td>
-						<td><input id="email"></td>
-					</tr>
-					<tr>
-						<td><label>Pièce d'identité</label></td>
-						<td><select id="idcard" name="">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-						<td><label>Numéro</label></td>
-						<td><input id="idnumber"></td>
-					</tr>
-					<tr>
-
-					</tr>
-					<tr>
-						<td><label>Adresse</label></td>
-					</tr>
-					<tr>
-						<td><label>Ville</label></td>
-						<td><input id="ville"></td>
-						<td><label>Code Postal</label></td>
-						<td><input id="postcode"></td>
-						<td><label>Gouvernorat</label></td>
-						<td><select id="gouv" name="gouv">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><label>Niveau scolaire</label></td>
-						<td><div id="nivscoAccomp">
-								<input type="radio" id="primaireAccomp" name="radio"><label
-									for="primaireAccomp">Primaire</label> <input type="radio"
-									id="secondaireAccomp" name="radio"><label
-									for="secondaireAccomp">Secondaire</label> <input type="radio"
-									id="superieurAccomp" name="radio" ><label
-									for="superieurAccomp">Superieur</label>
-
-							</div></td>
-					</tr>
-					<tr>
-						<td><label>Profession</label></td>
-						<td><select id="gouv" name="gouv">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-
-					</tr>
-					<tr>
-						<td><label>Etat civil</label></td>
-						<td>
-							<div id="etatradioAccomp">
-								<input type="radio" id="celibAccomp" name="radio"><label
-									for="celibAccomp">célibataire</label> <input type="radio" id="marieAccomp"
-									name="radio" ><label for="marieAccomp">Marié(e)</label>
-								<input type="radio" id="divorceAccomp" name="radio"><label
-									for="divorceAccomp">Divorcé(e)</label> <input type="radio" id="veufAccomp"
-									name="radio" ><label for="veuf">Veuf(ve)</label>
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td><label>Revenu</label></td>
-						<td><select id="gouv" name="gouv">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-
-					</tr>
-					<tr>
-				</table>
-
-
-			</div>
-			<h3>Informations Accompagnant(Si achat accompagné)</h3>
-			<div>
-				<table>
-					<tr>
-						<td><label>Lien</label></td>
-						<td>
-							<div id="lienRadio">
-								<input type="radio" id="ami" name="radio"><label
-									for="ami">Ami</label> <input type="radio" id="parent"
-									name="radio" ><label for="parent">Parent</label>
-								<input type="radio" id="vendeur" name="radio" ><label
-									for="vendeur">Vendeur</label>
-
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td><label>Opérateur téléphonique</label></td>
-						<td>
-							<div id="operateurRadio">
-								<input type="radio" id="tun" name="radio"><label
-									for="tun">Tunisiana</label> <input type="radio" id="orange"
-									name="radio" ><label for="orange">Orange</label>
-								<input type="radio" id="tt" name="radio" ><label
-									for="tt">Tunisie Télécom</label> <input type="radio"
-									id="ellissa" name="radio" ><label
-									for="ellissa">Ellissa</label>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td><label>Raison du choix de l'opérateur</label></td>
-						<td>
-							<div id="choixOpRadio">
-								<input type="radio" id="img" name="radio"><label
-									for="img">Image</label> <input type="radio" id="prix"
-									name="radio"><label for="prix">Prix</label>
-								<input type="radio" id="qos" name="radio" ><label
-									for="qos">Qualité de service</label> <input type="radio"
-									id="offre" name="radio" ><label
-									for="offre">Offre</label>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td><label>Dépenses</label></td>
-						<td><select id="gouv" name="gouv">
-								<option value="en-US">US $</option>
-								<option value="de-DE">EUR €</option>
-								<option value="ja-JP">YEN ¥</option>
-						</select></td>
-					</tr>
-				</table>
-
-			</div>
-
-
-
-		</div>
-
+		<input type="submit" value="Valider Les informations du client" >
+		</form>
 	</div>
+
 </body>
 </html>
